@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Антон Кириллов](https://up.htmlacademy.ru/javascript/21/user/234663).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Буртылёв](https://up.htmlacademy.ru/javascript/21/user/3341).
 
 ---
 
