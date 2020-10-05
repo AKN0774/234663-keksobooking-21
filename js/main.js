@@ -1,98 +1,88 @@
 'use strict';
 
-const QUANTITY_AD = 8; // Колличество объявлений.
+const AD_DISCRIPTION = {
+  title: [`Уютное местечко для молодожёнов`, `Тихий уголок`, `Место для созерцания природы`, `Идеальное место для детей и их уставших родителей`], // Выбирается случайным образом
+  type: [`palace`, `flat`, `house`, `bungalow`], // Выбирается случайным образом
+  features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`], // Выбирается случайным образом
+  photos: [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`], // Выбирается случайным образом
+  description: `Всё расскажут на месте`,
+};
+const MARKER_SIZE_X = 79;
+const MARKER_SIZE_Y = 158;
+const MAP_SIZE_X = [0 - MARKER_SIZE_X, 1200 - MARKER_SIZE_X]; // Размеры карты по оси X с учётом размера маркера по оси x.
+const MAP_SIZE_Y = [130 - MARKER_SIZE_Y, 650 - MARKER_SIZE_Y]; // Размеры карты по оси Y.
 const IMG_URL = `img/avatars/user0`;
 const IMG_TYPE = `.png`;
-const TITLE_ARR = [`Уютное местечко для молодожёнов`, `Тихий уголок`, `Место для созерцания природы`, `Идеальное место для детей и их уставших родителей`]; // Выбирается случайным образом
-const ADDRESS_X = 50;// Начальные координаты случайного адреса. Умножается на случайное число от 3 до 8
-const ADDRESS_Y = 50; // Начальные координаты случайного адреса. Умножается на случайное число от 3 до 8
-const COORDINATES_ADDRESS = [3, 8]; // Диапазон коэффициента случайных координат адреса.
-const ADDRESS_TITLE = `Наше чудное место находится по адрессу :`;
-const PRICE = 200; // Умножается на случайное число от 10 до 30
-const PRICE_RANGE = [10, 30]; // Диапазон коэффициента умножения случайной цены.
-const TYPE_ARR = [`palace`, `flat`, `house`, `bungalow`]; // Выбирается случайным образом
+const PRICE_RANGE = [1000, 8000]; // Диапазон цен.
 const ROOMS_RANGE = [1, 4]; // Диапазон числа комнат.
 const GUESTS_RANGE = [1, 5]; // Диапазон числа гостей.
 const CHECKIN = [`12:00`, `13:00`, `14:00`]; // Выбирается случайным образом
 const CHECKOUT = [`12:00`, `13:00`, `14:00`]; // Выбирается случайным образом
-const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
-const DESCRIPTION = `Всё расскажут на месте`;
-const PHOTO = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
-const LOCATION_X = 50; // Начальная координата на карте по X;
-const LOCATION_Y = 130; // Начальная координата на карте по Y;
-const LOCATION_RANGE = [1, 10]; // Диапазон коэффицента координат;
-const LOCATION_X_STEP = 100; // Шаг изменеия координат по X;
-const LOCATION_Y_STEP = 50; // Шаг изменения координат по Y;
+const AD_COUNTER = 8; // Колличество объявлений.
 
-// Функция расчёта случайного числа в заданном диапазоне.(price, rooms, guest).
-let getRandomNumber = function (arr) {
-  let min = arr[0];
-  let max = arr[1];
+// Функция расчёта случайного числа в заданном диапазоне.(price, rooms, guest, checkin, checkout,).
+let getRandomNumber = function (range) {
+  let min = range[0];
+  let max = range[1];
   return Math.floor(Math.random() * (max - min + 1)) + min; // Максимум и минимум включаются
 };
 
-// Функция расчёта случайного элемента массива.(title, type, checkin, checkout).
-let getRandomFromArr = function (arr) {
-  let min = 0;
-  let max = arr.length;
-  let i = Math.floor(Math.random() * (max - min + 1)) + min; // Максимум и минимум включаются
-  let randomArrElement = arr[i];
-  return randomArrElement;
+
+// Функция расчёта случайного элемента массива.(title, type).
+let getRandomElement = function (list) {
+  let listRange = [];
+  listRange.push(0);
+  listRange.push(list.length - 1);
+  let i = getRandomNumber(listRange);
+  let randomListElement = list[i];
+  return randomListElement;
 };
 
-// Функция расчёта случайных координат(address, location)
-let getRandomCoordinates = function (num, arr) {
-  let location = num * getRandomNumber(arr);
-  return location;
+let createRandomAD = function (counter) { // Создаём случайное объявление.
+  let locationX = getRandomNumber(MAP_SIZE_X);
+  let locationY = getRandomNumber(MAP_SIZE_Y);
+  return {
+    'author': {
+      avatar: IMG_URL + (counter + 1) + IMG_TYPE,
+    },
+    'offer': {
+      title: getRandomElement(AD_DISCRIPTION.title),
+      address: locationX + ` ,` + locationX,
+      price: getRandomNumber(PRICE_RANGE),
+      type: getRandomElement(AD_DISCRIPTION.type),
+      rooms: getRandomNumber(ROOMS_RANGE),
+      guests: getRandomNumber(GUESTS_RANGE),
+      checkin: getRandomElement(CHECKIN),
+      checkout: getRandomElement(CHECKOUT),
+      features: getRandomElement(AD_DISCRIPTION.features),
+      description: AD_DISCRIPTION.description,
+      photos: getRandomElement(AD_DISCRIPTION.photos),
+    },
+    'location': {
+      x: locationX,
+      y: locationY,
+    }
+  };
 };
 
-
-let getRandomAdArr = function (quantityAd) {
-
-  let objectAdArr = []; // Пустой массив, добавляем в него объекты.
-  let j;
-
-  for (let i = 0; i < quantityAd; i++) {
-    let author = {}; // Пустой объект, добавляем в него объект avatar.
-    let offer = {}; // Пустой объект, добавляем в него свойства.
-    let location = {}; // Пустой объект, добавляем в него координаты.
-    let randomObj = {}; // Пустой объект, добавляем в него объекты author, offer, location.
-    let avatarObj = {}; // Пустой объект, добавляем в него свойство avatar.
-    j = i;
-    avatarObj.avatar = IMG_URL + ++j + IMG_TYPE;
-    author.avatar = avatarObj;
-    offer.title = getRandomFromArr(TITLE_ARR);
-    offer.address = ADDRESS_TITLE + ` x:` + getRandomCoordinates(ADDRESS_X, COORDINATES_ADDRESS) + ` y:` + getRandomCoordinates(ADDRESS_Y, COORDINATES_ADDRESS);
-    offer.price = getRandomCoordinates(PRICE, PRICE_RANGE);
-    offer.type = getRandomFromArr(TYPE_ARR);
-    offer.rooms = getRandomNumber(ROOMS_RANGE);
-    offer.guests = getRandomNumber(GUESTS_RANGE);
-    offer.checkin = getRandomFromArr(CHECKIN);
-    offer.checkout = getRandomFromArr(CHECKOUT);
-    offer.features = FEATURES;
-    offer.decription = DESCRIPTION;
-    offer.photos = PHOTO;
-    location.x = LOCATION_X + getRandomCoordinates(LOCATION_X_STEP, LOCATION_RANGE);
-    location.y = LOCATION_Y + getRandomCoordinates(LOCATION_Y_STEP, LOCATION_RANGE);
-    randomObj.author = author;
-    randomObj.offer = offer;
-    randomObj.location = location;
-    objectAdArr.push(randomObj);
+let createAdList = function (adCounter) { // Формируем массив из случайных объявлений.
+  let adList = [];
+  let randomAd;
+  for (let i = 0; i < adCounter; i++) {
+    randomAd = createRandomAD(i);
+    adList.push(randomAd);
   }
-  return objectAdArr;
+  return adList;
 };
 
 
-let mapPinDiv = document.querySelector(`.map_pins`); // Находим блок, куда будем добавлять фрагмент.
-let simelarMapPinTemplate = document.querySelector(`#pin`)
+let createMapPin = function (objectAd) { // Создаём метку на карте по шаблону.
+  let simelarMapPinTemplate = document.querySelector(`#pin`)
     .content
     .querySelector(`.map__pin`); // Находим div в шаблоне, которому будем менять свойства. Что-то идёт не так. Постоянно выходит ошибка!!!!!
-let adArr = getRandomAdArr(QUANTITY_AD); // Получаем массив объектов для заполнения шаблона.
-
-let fillMapPin = function (objectAd) {
   let mapPin = simelarMapPinTemplate.cloneNode(true); // Клонируем шаблон
-  let locationPinX = objectAd[`x`] + 78; // Получаем координаты по X объекта с учётом размеров изображения указателя
-  let locationPinY = objectAd[`y`] + 156; // Получаем координаты по Y объекта с учётом размеров изображения указателя
+  let locationPinX = objectAd[`x`]; // Получаем координаты по X объекта с учётом размеров изображения указателя
+  let locationPinY = objectAd[`y`]; // Получаем координаты по Y объекта с учётом размеров изображения указателя
   mapPin.style.left = locationPinX; // Добавляем координаты в шаблон
   mapPin.style.top = locationPinY;
   mapPin.src = objectAd[`avatar`]; // Добавляем адрес изображения
@@ -100,11 +90,14 @@ let fillMapPin = function (objectAd) {
   return mapPin;
 };
 
-let fragmentMapPin = document.createDocumentFragment(); // Объявляем переменную для создания фрагмента
+let createFragmentPins = function () { // Создаём фрагмент из созданных маркеров на карте.
 
-// Цикл добавления шаблона во фрагмент. Для создания шаблона используем массив сгенерированных объектов
-for (let i = 0; i < adArr; i++) {
-  fragmentMapPin.appendChild(fillMapPin(adArr[i]));
-}
-
-mapPinDiv.appendChild(fragmentMapPin); // Добавляем фрагмент в DOM
+  let createdAdList = createAdList(AD_COUNTER); // Получаем массив случайных объектов.
+  let fragmentMapPin = document.createDocumentFragment(); // Объявляем переменную для создания фрагмента
+  for (let i = 0; i < AD_COUNTER; i++) {
+    fragmentMapPin.appendChild(createMapPin(createdAdList[i])); // Добавляем созданные маркеры в фрагмент.
+  }
+  return fragmentMapPin;
+};
+let mapPinDiv = document.querySelector(`.map_pins`); // Находим блок, куда будем добавлять фрагмент.
+mapPinDiv.appendChild(createFragmentPins); // Добавляем фрагмент в DOM
