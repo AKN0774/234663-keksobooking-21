@@ -95,7 +95,7 @@ let createMapPin = function (counter) { // Создаём метку на кар
 let createFragmentOfPins = function (counter) {
   let createdFragment = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
   let generatePin;
-  for (let i = 0;i < counter; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
+  for (let i = 0; i < counter; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
     generatePin = createMapPin(i);
     createdFragment.appendChild(generatePin);
   }
