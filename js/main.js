@@ -7,8 +7,8 @@ const AD_DISCRIPTION = {
   photos: [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`], // Выбирается случайным образом
   description: `Всё расскажут на месте`,
 };
-const MARKER_SIZE_X = 50;
-const MARKER_SIZE_Y = 70;
+const MARKER_SIZE_X = 50; // Размеры маркера по оси X.
+const MARKER_SIZE_Y = 70; // Размеры маркера по оси Y.
 const MAP_SIZE_X = [0, 1200]; // Размеры карты по оси X с учётом размера маркера по оси x.
 const MAP_SIZE_Y = [130, 650]; // Размеры карты по оси Y.
 const IMG_URL = `img/avatars/user0`;
@@ -63,25 +63,44 @@ let createRandomAD = function (counter) { // Создаём случайное �
   };
 };
 
+// Функция создания массива из случайно сгенерированных объявлений.
+let createListAd = function (counter) {
+  let listAd = [];
+  for (let i = 0; i < counter; i++) {
+    listAd.push(createRandomAD(i));
+  }
+  return listAd;
+};
+
+
+// Функция создания метки на карте из случайного объявления.
 let createMapPin = function (counter) { // Создаём метку на карте по шаблону.
   let simelarMapPinTemplate = document.querySelector(`#pin`)
     .content
     .querySelector(`.map__pin`); // Находим button в шаблоне, которой будем менять свойства.
-  let fragmentMapPin = document.createDocumentFragment(); // Объявляем переменную для создания фрагмента
+  let randomListAD = createListAd(AD_COUNTER);
+  let randomAd = randomListAD[counter];
+  let randomMapPin = simelarMapPinTemplate.cloneNode(true); // Клонируем шаблон
+  let locationPinX = randomAd.location.x - MARKER_SIZE_X / 2 + `px`; // Получаем координаты по X объекта с учётом размеров изображения указателя
+  let locationPinY = randomAd.location.y - MARKER_SIZE_Y + `px`; // Получаем координаты по Y объекта с учётом размеров изображения указателя
+  randomMapPin.style.left = locationPinX; // Добавляем координаты в шаблон
+  randomMapPin.style.top = locationPinY;
+  randomMapPin.children[0].src = randomAd.author.avatar; // Добавляем адрес изображения
+  randomMapPin.children[0].alt = randomAd.offer.title; // Добавляем описание из генерированного случайного объекта
 
-  for (let i = 0; i < counter; i++) {
-    let randomAd = createRandomAD(i);
-    let mapPin = simelarMapPinTemplate.cloneNode(true); // Клонируем шаблон
-    let locationPinX = randomAd.location.x - MARKER_SIZE_X / 2 + `px`; // Получаем координаты по X объекта с учётом размеров изображения указателя
-    let locationPinY = randomAd.location.y - MARKER_SIZE_Y + `px`; // Получаем координаты по Y объекта с учётом размеров изображения указателя
-    mapPin.style.left = locationPinX; // Добавляем координаты в шаблон
-    mapPin.style.top = locationPinY;
-    mapPin.children[0].src = randomAd.author.avatar; // Добавляем адрес изображения
-    mapPin.children[0].alt = randomAd.offer.title; // Добавляем описание из генерированного случайного объекта
-    fragmentMapPin.appendChild(mapPin); // Добавляем сгенирированную метку во фрагмент.
+  return randomMapPin;
+};
+
+// Функция создания фрагмента с добавлением в него сгенерированных объявлений.
+let createFragmentOfPins = function (counter) {
+  let createdFragment = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
+  let generatePin;
+  for (let i = 0;i < counter; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
+    generatePin = createMapPin(i);
+    createdFragment.appendChild(generatePin);
   }
-  return fragmentMapPin;
+  return createdFragment;
 };
 
 let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
-mapPinDiv.appendChild(createMapPin(AD_COUNTER)); // Добавляем фрагмент в DOM
+mapPinDiv.appendChild(createFragmentOfPins(AD_COUNTER)); // Добавляем фрагмент в DOM
