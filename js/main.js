@@ -75,11 +75,11 @@ let createListAd = function (counter) {
 let randomListAD = createListAd(AD_COUNTER); // Создаём переменную в которую сохраням массив сгенерированных случайных объявлений.
 
 // Функция создания метки на карте из случайного объявления.
-let createMapPin = function (counter) { // Создаём метку на карте по шаблону.
+let createMapPin = function (counter, listAD) { // Создаём метку на карте по шаблону.
   let simelarMapPinTemplate = document.querySelector(`#pin`)
     .content
     .querySelector(`.map__pin`); // Находим button в шаблоне, которой будем менять свойства.
-  let randomAd = randomListAD[counter];
+  let randomAd = listAD[counter];
   let randomMapPin = simelarMapPinTemplate.cloneNode(true); // Клонируем шаблон
   let locationPinX = randomAd.location.x - MARKER_SIZE_X / 2 + `px`; // Получаем координаты по X объекта с учётом размеров изображения указателя
   let locationPinY = randomAd.location.y - MARKER_SIZE_Y + `px`; // Получаем координаты по Y объекта с учётом размеров изображения указателя
@@ -96,7 +96,7 @@ let createFragmentOfPins = function (counter) {
   let createdFragment = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
   let generatePin;
   for (let i = 0; i < counter; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
-    generatePin = createMapPin(i);
+    generatePin = createMapPin(i, randomListAD);
     createdFragment.appendChild(generatePin);
   }
   return createdFragment;
