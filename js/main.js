@@ -1,6 +1,6 @@
 'use strict';
 
-const AD_DISCRIPTION = {
+/* const AD_DISCRIPTION = {
   title: [`Уютное местечко для молодожёнов`, `Тихий уголок`, `Место для созерцания природы`, `Идеальное место для детей и их уставших родителей`], // Выбирается случайным образом
   type: [`palace`, `flat`, `house`, `bungalow`], // Выбирается случайным образом
   features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`], // Выбирается случайным образом
@@ -19,7 +19,7 @@ const ROOMS_RANGE = [1, 4]; // Диапазон числа комнат.
 const GUESTS_RANGE = [1, 5]; // Диапазон числа гостей.
 const CHECKIN = [`12:00`, `13:00`, `14:00`]; // Выбирается случайным образом
 const CHECKOUT = [`12:00`, `13:00`, `14:00`]; // Выбирается случайным образом
-const AD_COUNTER = 8; // Колличество объявлений.
+const AD_COUNTER = 8; // Колличество объявлений. */
 
 const MAIN_PIN_X = 64; // Размеры главного маркера по оси X.
 const MAIN_PIN_Y_NOACTIVE = 64; // Размеры главного маркера по оси Y в не активном состоянии.
@@ -109,13 +109,13 @@ addDisabled(fieldsetForm);
 addDisabled(mapFilterForm);
 fillAddress();
 
-let roomNumber = adForm.querySelector(`#room_number`); // Находим поле выбора колличества комнат.
-let guestCapacity = adForm.querySelector(`#capacity`); // Находим поле выбора колличества гостей.
+let roomNumber = adForm.querySelector(`#room_number`); // Находим поле выбора количества комнат.
+let guestCapacity = adForm.querySelector(`#capacity`); // Находим поле выбора количества гостей.
 
-// Функция валидации поля колличества комнат.
+// Функция валидации поля количества комнат.
 let roomValidity = function () {
-  let quantityRooms = Number(roomNumber.value); // Объявляем переменную для хранения данных введённых в поле выбора колличества комнат.
-  let quantityGuests = Number(guestCapacity.value); // Объявляем переменную для хранения данных введённых в поле выбора колличества гостей.
+  let quantityRooms = Number(roomNumber.value); // Объявляем переменную для хранения данных введённых в поле выбора количества комнат.
+  let quantityGuests = Number(guestCapacity.value); // Объявляем переменную для хранения данных введённых в поле выбора количества гостей.
   if (quantityRooms < quantityGuests) {
     roomNumber.setCustomValidity(`Все гости не поместятся`);
   } else {
@@ -124,9 +124,10 @@ let roomValidity = function () {
   roomNumber.reportValidity();
 };
 
+// Функция валидации поля количества гостей.
 let guestsValidity = function () {
-  let quantityRooms = Number(roomNumber.value); // Объявляем переменную для хранения данных введённых в поле выбора колличества комнат.
-  let quantityGuests = Number(guestCapacity.value); // Объявляем переменную для хранения данных введённых в поле выбора колличества гостей.
+  let quantityRooms = Number(roomNumber.value); // Объявляем переменную для хранения данных введённых в поле выбора количества комнат.
+  let quantityGuests = Number(guestCapacity.value); // Объявляем переменную для хранения данных введённых в поле выбора количества гостей.
   if (quantityGuests > quantityRooms) {
     guestCapacity.setCustomValidity(`Все гости не поместятся`);
   } else {
@@ -135,13 +136,13 @@ let guestsValidity = function () {
   guestCapacity.reportValidity();
 };
 
-// Добавляем обработчик на поле выбора колличества комнат.
+// Добавляем обработчик на поле выбора количества комнат.
 roomNumber.onchange = function () {
   roomValidity();
   guestsValidity();
 };
 
-// Добавляем обработчик на поле выбора колличества гостей.
+// Добавляем обработчик на поле выбора количества гостей.
 guestCapacity.addEventListener(`input`, function () {
   guestsValidity();
   roomValidity();
