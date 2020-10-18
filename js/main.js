@@ -1,6 +1,6 @@
 'use strict';
 
-/* const AD_DISCRIPTION = {
+const AD_DISCRIPTION = {
   title: [`Уютное местечко для молодожёнов`, `Тихий уголок`, `Место для созерцания природы`, `Идеальное место для детей и их уставших родителей`], // Выбирается случайным образом
   type: [`palace`, `flat`, `house`, `bungalow`], // Выбирается случайным образом
   features: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`], // Выбирается случайным образом
@@ -19,7 +19,7 @@ const ROOMS_RANGE = [1, 4]; // Диапазон числа комнат.
 const GUESTS_RANGE = [1, 5]; // Диапазон числа гостей.
 const CHECKIN = [`12:00`, `13:00`, `14:00`]; // Выбирается случайным образом
 const CHECKOUT = [`12:00`, `13:00`, `14:00`]; // Выбирается случайным образом
-const AD_COUNTER = 8; // Колличество объявлений. */
+const AD_COUNTER = 8; // Колличество объявлений.
 
 const MAIN_PIN_X = 64; // Размеры главного маркера по оси X.
 const MAIN_PIN_Y_NOACTIVE = 64; // Размеры главного маркера по оси Y в не активном состоянии.
@@ -32,123 +32,157 @@ let mapFilterForm = document.querySelector(`.map__filters`); // Находим �
 let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
 
 
-// Функция для получения числа из строки.
-let getInteger = function (line) {
-  let re = /[\d]*/;
-  let integerInLine = re.exec(line);
-  return Number(integerInLine[0]);
+// Функция добавления неактивного состояния элементов.
+let addDisabled = function (elements) {
+  for (let element of elements) {
+    element.disabled = true;
+  }
 };
 
-// Функция добавления значений в поле адреса.
-let fillAddress = function () {
+addDisabled(fieldsetForm);
+addDisabled(mapFilterForm);
+
+// Функция перевода элементов в активное состояние.
+let removeDisabled = function (elements) {
+  for (let element of elements) {
+    element.disabled = false;
+  }
+};
+
+// Функция активации карты.
+let activateMap = function () {
+  map.classList.remove(`map--faded`);
+};
+
+// Функция активации формы объвления.
+let activateAdForm = function () {
+  adForm.classList.remove(`ad-form--disabled`);
+  removeDisabled(mapFilterForm);
+  removeDisabled(fieldsetForm);
+};
+
+// Функция активации страницы.
+let activatePage = function () {
+  activateMap();
+  activateAdForm();
+};
+
+// Функция получения адреса из координат пина.
+let getAddress = function () {
   let locX = mainMapPin.style.left;
   let locY = mainMapPin.style.top;
   if (map.classList.contains(`map--faded`)) {
-    locX = getInteger(locX) + (MAIN_PIN_X / 2);
-    locY = getInteger(locY) + (MAIN_PIN_Y_NOACTIVE / 2);
+    locX = parseInt(locX, 10) + (MAIN_PIN_X / 2);
+    locY = parseInt(locY, 10) + (MAIN_PIN_Y_NOACTIVE / 2);
   } else {
-    locX = getInteger(locX) + (MAIN_PIN_X / 2);
-    locY = getInteger(locY) + (MAIN_PIN_Y_ACTIVE);
+    locX = parseInt(locX, 10) + (MAIN_PIN_X / 2);
+    locY = parseInt(locY, 10) + (MAIN_PIN_Y_ACTIVE);
   }
-
-  addressInput.value = `Токио, улица ` + locX + ` , дом ` + locY;
+  return {
+    x: locX,
+    y: locY,
+  };
 };
 
+// Функция добавления значений в поле адреса.
+let fillAddress = function (locationAddress) {
+  let locX = locationAddress.x;
+  let locY = locationAddress.y;
+  addressInput.value = `X : ` + locX + ` , Y : ` + locY;
+};
+
+fillAddress(getAddress()); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
 
 // Добавляем обработчик нажатия кнопки мыши на главный пин.
 mainMapPin.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
-    activateMap();
-    adFormActivate();
-    removeDisabled(mapFilterForm);
-    fillAddress();
+    activatePage(); // Активируем страницу.
+    fillAddress(getAddress()); // Заполняем поле адреса уже после активации.
   }
 });
 
 // Добавляема обработчик нажатия клавиши Enter при фокусе на главном пине.
 mainMapPin.addEventListener(`keydown`, function (evt) {
   if (evt.key === `Enter`) {
-    activateMap();
-    adFormActivate();
-    removeDisabled(mapFilterForm);
-    fillAddress();
+    activatePage(); // Активируем страницу.
+    fillAddress(getAddress()); // Заполняем поле адреса уже после активации.
   }
 });
 
-// Функция удаления класса у элемента.
-let removeClass = function (element, elementClass) {
-  element.classList.remove(elementClass);
-};
-
-// Функция добавления неактивного состояния элементов.
-let addDisabled = function (lists) {
-  for (let list of lists) {
-    list.disabled = true;
-  }
-};
-
-// Функция перевода элементов в активное состояние.
-let removeDisabled = function (lists) {
-  for (let list of lists) {
-    list.disabled = false;
-  }
-};
-
-// Функция активации карты.
-let activateMap = function () {
-  removeClass(map, `map--faded`);
-};
-
-// Функция активации формы.
-let adFormActivate = function () {
-  removeClass(adForm, `ad-form--disabled`);
-  removeDisabled(fieldsetForm);
-};
-
-addDisabled(fieldsetForm);
-addDisabled(mapFilterForm);
-fillAddress();
-
 let roomNumber = adForm.querySelector(`#room_number`); // Находим поле выбора количества комнат.
 let guestCapacity = adForm.querySelector(`#capacity`); // Находим поле выбора количества гостей.
+let typeOfLodging = adForm.querySelector(`#type`); // Находим поле выбора типа жилья.
+let price = adForm.querySelector(`#price`); // Находим поле ввода цены за жильё.
+let submitForm = adForm.querySelector(`.ad-form__submit`); // Находим кнопку отсылки формы.
 
 // Функция валидации поля количества комнат.
 let roomValidity = function () {
-  let quantityRooms = Number(roomNumber.value); // Объявляем переменную для хранения данных введённых в поле выбора количества комнат.
-  let quantityGuests = Number(guestCapacity.value); // Объявляем переменную для хранения данных введённых в поле выбора количества гостей.
-  if (quantityRooms < quantityGuests) {
-    roomNumber.setCustomValidity(`Все гости не поместятся`);
-  } else {
+  let rooms = parseInt(roomNumber.value, 10); // Объявляем переменную для хранения данных введённых в поле выбора количества комнат.
+  let guests = parseInt(guestCapacity.value, 10); // Объявляем переменную для хранения данных введённых в поле выбора количества гостей.
+  if (rooms === 1 && guests === 1 || rooms === 2 && guests > 0 && guests < 3 || rooms === 3 && guests > 0 || rooms === 100 && guests === 0) {
     roomNumber.setCustomValidity(``);
+  } else if (rooms === 1 && guests === 0 || rooms === 2 && guests === 0 || rooms === 3 && guests === 0) {
+    roomNumber.setCustomValidity(`Добавте гостей.`);
+  } else if (rooms === 1 && guests > 1 || rooms === 2 && guests > 2 || rooms === 100 && guests > 0) {
+    roomNumber.setCustomValidity(`Слишком много гостей.`);
   }
   roomNumber.reportValidity();
 };
 
-// Функция валидации поля количества гостей.
-let guestsValidity = function () {
-  let quantityRooms = Number(roomNumber.value); // Объявляем переменную для хранения данных введённых в поле выбора количества комнат.
-  let quantityGuests = Number(guestCapacity.value); // Объявляем переменную для хранения данных введённых в поле выбора количества гостей.
-  if (quantityGuests > quantityRooms) {
-    guestCapacity.setCustomValidity(`Все гости не поместятся`);
+// Функция зависимости минимальной цены от типа жилья.
+let setPrice = function () {
+  let type = typeOfLodging.value;
+  if (type === `bungalow`) {
+    price.min = `0`;
+    price.placeholder = `0`;
+  } else if (type === `flat`) {
+    price.min = `1000`;
+    price.placeholder = `1000`;
+  } else if (type === `house`) {
+    price.min = `5000`;
+    price.placeholder = `5000`;
   } else {
-    guestCapacity.setCustomValidity(``);
+    price.min = `10000`;
+    price.placeholder = `10000`;
   }
-  guestCapacity.reportValidity();
 };
 
-// Добавляем обработчик на поле выбора количества комнат.
-roomNumber.onchange = function () {
-  roomValidity();
-  guestsValidity();
-};
+setPrice(); // Вызываем функцию установки минимальной цены.
 
-// Добавляем обработчик на поле выбора количества гостей.
-guestCapacity.addEventListener(`input`, function () {
-  guestsValidity();
-  roomValidity();
+// Добавляем обработчик валидации цены на поле выбора типа жилья.
+typeOfLodging.addEventListener(`input`, function () {
+  setPrice();
+  priceValidity();
 });
 
-/* // Функция расчёта случайного числа в заданном диапазоне.(price, rooms, guest, checkin, checkout,).
+let priceValidity = function () {
+  let minPrice = parseInt(price.min, 10);
+  let maxPrice = parseInt(price.max, 10);
+  let priceValue = parseInt(price.value, 10);
+  if (minPrice > priceValue) {
+    price.setCustomValidity(`Цена за жильё очень низкая`);
+  } else if (maxPrice < priceValue) {
+    price.setCustomValidity(`Цена слишком высока.`);
+  } else {
+    price.setCustomValidity(``);
+  }
+  price.reportValidity();
+};
+
+// Добавляем обработчик проверки цены на поле ввода цены.
+price.addEventListener(`input`, function () {
+  priceValidity();
+});
+
+// Добавляем обработчик валидации на кнопку отправки формы.
+submitForm.addEventListener(`click`, function (evt) {
+  evt.preventDefault();
+  roomValidity();
+  setPrice();
+  priceValidity();
+});
+
+// Функция расчёта случайного числа в заданном диапазоне.(price, rooms, guest, checkin, checkout,).
 let getRandomNumber = function (range) {
   let min = range[0];
   let max = range[1];
@@ -231,5 +265,5 @@ let createFragmentOfPins = function (listAD) {
 
 let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
 mapPinDiv.appendChild(createFragmentOfPins(randomListAD)); // Добавляем фрагмент в DOM
- */
+
 
