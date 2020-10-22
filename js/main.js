@@ -152,32 +152,15 @@ setPrice(); // Вызываем функцию установки минимал
 // Добавляем обработчик валидации цены на поле выбора типа жилья.
 typeOfLodging.addEventListener(`input`, function () {
   setPrice();
-  // priceValidity();
 });
-
-/* let priceValidity = function () {
-  let minPrice = parseInt(price.min, 10);
-  let maxPrice = parseInt(price.max, 10);
-  let priceValue = parseInt(price.value, 10);
-  if (minPrice > priceValue) {
-    price.setCustomValidity(`Цена за жильё очень низкая`);
-  } else if (maxPrice < priceValue) {
-    price.setCustomValidity(`Цена слишком высока.`);
-  } else {
-    price.setCustomValidity(``);
-  }
-  price.reportValidity();
-}; */
 
 // Добавляем обработчик проверки цены на поле ввода цены.
 price.addEventListener(`input`, function () {
-  // priceValidity();
 });
 
 // Добавляем обработчик валидации на кнопку отправки формы.
-submitForm.addEventListener(`click`, function (evt) {
+submitForm.addEventListener(`click`, function () {
   roomValidity();
-  // priceValidity();
 });
 
 // Функция расчёта случайного числа в заданном диапазоне.(price, rooms, guest, checkin, checkout,).
