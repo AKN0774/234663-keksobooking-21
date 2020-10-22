@@ -154,10 +154,6 @@ typeOfLodging.addEventListener(`input`, function () {
   setPrice();
 });
 
-// Добавляем обработчик проверки цены на поле ввода цены.
-price.addEventListener(`input`, function () {
-});
-
 // Добавляем обработчик валидации на кнопку отправки формы.
 submitForm.addEventListener(`click`, function () {
   roomValidity();
