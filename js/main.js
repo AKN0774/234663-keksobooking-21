@@ -65,6 +65,8 @@ let activateAdForm = function () {
 let activatePage = function () {
   activateMap();
   activateAdForm();
+  fillAddress(getAddress()); // Заполняем поле адреса уже после активации.
+  addFramentOfPins();
 };
 
 // Функция получения адреса из координат пина.
@@ -97,7 +99,6 @@ fillAddress(getAddress()); // Вызываем функцию заполнени
 mainMapPin.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
     activatePage(); // Активируем страницу.
-    fillAddress(getAddress()); // Заполняем поле адреса уже после активации.
   }
 });
 
@@ -105,7 +106,6 @@ mainMapPin.addEventListener(`mousedown`, function (evt) {
 mainMapPin.addEventListener(`keydown`, function (evt) {
   if (evt.key === `Enter`) {
     activatePage(); // Активируем страницу.
-    fillAddress(getAddress()); // Заполняем поле адреса уже после активации.
   }
 });
 
@@ -120,13 +120,13 @@ let roomValidity = function () {
   let rooms = parseInt(roomNumber.value, 10); // Объявляем переменную для хранения данных введённых в поле выбора количества комнат.
   let guests = parseInt(guestCapacity.value, 10); // Объявляем переменную для хранения данных введённых в поле выбора количества гостей.
   if (rooms === 1 && guests === 1 || rooms === 2 && guests > 0 && guests < 3 || rooms === 3 && guests > 0 || rooms === 100 && guests === 0) {
-    roomNumber.setCustomValidity(``);
+    guestCapacity.setCustomValidity(``);
   } else if (rooms === 1 && guests === 0 || rooms === 2 && guests === 0 || rooms === 3 && guests === 0) {
-    roomNumber.setCustomValidity(`Добавте гостей.`);
+    guestCapacity.setCustomValidity(`Добавте гостей.`);
   } else if (rooms === 1 && guests > 1 || rooms === 2 && guests > 2 || rooms === 100 && guests > 0) {
-    roomNumber.setCustomValidity(`Слишком много гостей.`);
+    guestCapacity.setCustomValidity(`Слишком много гостей.`);
   }
-  roomNumber.reportValidity();
+  guestCapacity.reportValidity();
 };
 
 // Функция зависимости минимальной цены от типа жилья.
@@ -152,10 +152,10 @@ setPrice(); // Вызываем функцию установки минимал
 // Добавляем обработчик валидации цены на поле выбора типа жилья.
 typeOfLodging.addEventListener(`input`, function () {
   setPrice();
-  priceValidity();
+  // priceValidity();
 });
 
-let priceValidity = function () {
+/* let priceValidity = function () {
   let minPrice = parseInt(price.min, 10);
   let maxPrice = parseInt(price.max, 10);
   let priceValue = parseInt(price.value, 10);
@@ -167,19 +167,17 @@ let priceValidity = function () {
     price.setCustomValidity(``);
   }
   price.reportValidity();
-};
+}; */
 
 // Добавляем обработчик проверки цены на поле ввода цены.
 price.addEventListener(`input`, function () {
-  priceValidity();
+  // priceValidity();
 });
 
 // Добавляем обработчик валидации на кнопку отправки формы.
 submitForm.addEventListener(`click`, function (evt) {
-  evt.preventDefault();
   roomValidity();
-  setPrice();
-  priceValidity();
+  // priceValidity();
 });
 
 // Функция расчёта случайного числа в заданном диапазоне.(price, rooms, guest, checkin, checkout,).
@@ -264,6 +262,6 @@ let createFragmentOfPins = function (listAD) {
 };
 
 let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
-mapPinDiv.appendChild(createFragmentOfPins(randomListAD)); // Добавляем фрагмент в DOM
-
-
+let addFramentOfPins = function () {
+  mapPinDiv.appendChild(createFragmentOfPins(randomListAD)); // Добавляем фрагмент в DOM
+};
