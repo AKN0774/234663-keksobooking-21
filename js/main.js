@@ -2,47 +2,30 @@
 
 // Блок с активацией страницы и карты.
 
-let adForm = document.querySelector(`.ad-form`); // Находим форму объявления.
-let fieldsetForm = adForm.querySelectorAll(`fieldset`); // Находим все fieldset формы.
-let map = document.querySelector(`.map`); // Находим карту.
-let mapFilterForm = document.querySelector(`.map__filters`); // Находим форму фильтра.
+// Функция создания фрагмента с добавлением в него сгенерированных объявлений.
+(function () {
+  window.createFragment = function (listAD, filledTemplate) {
+    let createdFragment = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
+    let generatePin;
+    for (let i = 0; i < listAD.length; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
+      generatePin = filledTemplate(listAD[i]);
+      createdFragment.appendChild(generatePin);
+    }
+    return createdFragment;
+  };
+}());
+
 let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
 
-// Функция добавления неактивного состояния элементов.
-let addDisabled = function (elements) {
-  for (let element of elements) {
-    element.disabled = true;
-  }
-};
-
-addDisabled(fieldsetForm);
-addDisabled(mapFilterForm);
-
-// Функция перевода элементов в активное состояние.
-let removeDisabled = function (elements) {
-  for (let element of elements) {
-    element.disabled = false;
-  }
-};
-
-// Функция активации карты.
-let activateMap = function () {
-  map.classList.remove(`map--faded`);
-};
-
-// Функция активации формы объвления.
-let activateAdForm = function () {
-  adForm.classList.remove(`ad-form--disabled`);
-  removeDisabled(mapFilterForm);
-  removeDisabled(fieldsetForm);
-};
+window.fillInputAddress(window.getMapAddress()); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
 
 // Функция активации страницы.
 let activatePage = function () {
-  activateMap();
-  activateAdForm();
-  window.fillAddress(window.getMapAddress); // Заполняем поле адреса уже после активации.
-  window.addFramentOfPins();
+  window.activateMap();
+  window.activateAdForm();
+  window.fillInputAddress(window.getMapAddress()); // Заполняем поле адреса уже после активации.
+  window.mapAddFragment();
+  window.mapCardAddFragment();
 };
 
 // Добавляем обработчик нажатия кнопки мыши на главный пин.

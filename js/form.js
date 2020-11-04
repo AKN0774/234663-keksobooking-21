@@ -4,20 +4,41 @@
 (function () {
   let adForm = document.querySelector(`.ad-form`); // Находим форму объявления.
   let addressInput = adForm.querySelector(`#address`); // Находим поле адреса.
+  let fieldsetForm = adForm.querySelectorAll(`fieldset`); // Находим все fieldset формы.
+
+  let addDisabled = function (elements) {
+    for (let element of elements) {
+      element.disabled = true;
+    }
+  };
+
+  addDisabled(fieldsetForm);
+
+  let removeDisabled = function (elements) {
+    for (let element of elements) {
+      element.disabled = false;
+    }
+  };
+
+  // Функция активации формы объвления.
+  window.activateAdForm = function () {
+    adForm.classList.remove(`ad-form--disabled`);
+    removeDisabled(fieldsetForm);
+  };
 
   // Функция добавления значений в поле адреса.
-  window.fillAddress = function (locationAddress) {
-    let locX = locationAddress.x;
-    let locY = locationAddress.y;
-    addressInput.value = `X : ` + locX + ` , Y : ` + locY;
+  window.fillInputAddress = function (address) {
+    let {x, y} = address;
+    addressInput.value = `X : ` + x + ` , Y : ` + y;
   };
+
   let roomNumber = adForm.querySelector(`#room_number`); // Находим поле выбора количества комнат.
   let guestCapacity = adForm.querySelector(`#capacity`); // Находим поле выбора количества гостей.
   let typeOfLodging = adForm.querySelector(`#type`); // Находим поле выбора типа жилья.
   let price = adForm.querySelector(`#price`); // Находим поле ввода цены за жильё.
+  let timeIn = adForm.querySelector(`#timein`); // Находим поле выбора времени заезда.
+  let timeOut = adForm.querySelector(`#timeout`); // Находим поле выбора времени выезда.
   let submitForm = adForm.querySelector(`.ad-form__submit`); // Находим кнопку отсылки формы.
-
-  window.fillAddress(window.mapAddress); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
 
   // Функция валидации поля количества комнат.
   let roomValidity = function () {
@@ -56,6 +77,27 @@
   // Добавляем обработчик валидации цены на поле выбора типа жилья.
   typeOfLodging.addEventListener(`input`, function () {
     setPrice();
+  });
+
+  // Функция синхронизации времени заезда и выезда.
+  let selectTime = function (elementOne, elementTwo) {
+    if (elementOne.value === `12:00`) {
+      elementTwo.value = `12:00`;
+    } else if (elementOne.value === `13:00`) {
+      elementTwo.value = `13:00`;
+    } else {
+      elementTwo.value = `14:00`;
+    }
+  };
+
+  // Обработчик синхронизации времени въезда и выезда.
+  timeIn.addEventListener(`input`, function () {
+    selectTime(timeIn, timeOut);
+  });
+
+  // Обработчик синхронизации времени выезда и въезда.
+  timeOut.addEventListener(`input`, function () {
+    selectTime(timeOut, timeIn);
   });
 
   // Добавляем обработчик валидации на кнопку отправки формы.
