@@ -15,8 +15,6 @@
     let cardListFeatures = cardFromPin.querySelector(`.popup__features`); // Список дополнительных опций жилища.
     let cardFeaturesElements = cardListFeatures.querySelectorAll(`.popup__feature`); // Все элементы списка дополнительных опций.
     let cardDescription = cardFromPin.querySelector(`.popup__description`); // Описание объекта.
-    let cardPhotoDiv = cardFromPin.querySelector(`.popup__photos`); // Блок с фотографиями объекта
-    let cardPhoto = cardPhotoDiv.querySelector(`.popup__photo`); // Фотографии объекта.
 
     cardFromPin.style.display = `none`;
     cardAvatar.src = randomAd.author.avatar; // Добавляем аватар автора объявления.
@@ -26,10 +24,9 @@
     cardType.textContent = randomAd.offer.type; // Заполняем поле типа жилья.
     cardCapacity.textContent = randomAd.offer.rooms + ` комнаты для ` + randomAd.offer.guests + ` гостей`; // Заполняем количество гостей и комнат.
     cardTime.textContent = ` Заезд после ` + randomAd.offer.checkin + ` , выезд до ` + randomAd.offer.checkout; // Заполняем время заезда и выезда.
-    cardFeaturesElements = fillFeatures(cardFeaturesElements, randomAd.offer.features);// Заполняем список дополнительных опций объекта.
     cardDescription.textContent = randomAd.offer.description; // Заполняем поле описания объекта.
-    // cardPhotoDiv = fillPhotoDiv(cardPhoto, cardPhotoDiv, randomAd.offer.photos);
-
+    let filledFeatures = fillFeatures(cardFeaturesElements, randomAd.offer.features);
+    cardFeaturesElements = filledFeatures;// Заполняем список дополнительных опций объекта.
     return cardFromPin;
   };
 
@@ -39,14 +36,6 @@
       elements[i].textContent = features[i];
     }
   };
-
-/*   let fillPhotoDiv = function (elements, mainElement, photosList) {
-    for (elements of photosList) {
-      elements.src = photosList;
-      mainElement.appendChild(elements);
-    }
-    return mainElement;
-  }; */
 
 
 })();
