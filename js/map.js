@@ -9,25 +9,19 @@
   let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
   let mapFilterForm = document.querySelector(`.map__filters`); // Находим форму фильтра.
 
-  let addDisabled = function (elements) {
-    for (let element of elements) {
-      element.disabled = true;
-    }
-  };
-
-  addDisabled(mapFilterForm); // Делаем фильтр карты неактивным.
+  window.util.disabled(mapFilterForm); // Делаем фильтр карты неактивным.
 
   // Блок функций для добавления фрагмента в DOM.
 
-  let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
-  window.mapAddFragment = function () {
-    mapPinDiv.appendChild(window.createFragment(window.randomListAD, window.dataFillTemplate)); // Добавляем фрагмент с пинами в DOM
+ /*  let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
+  let addFragmentPin = function () {
+    mapPinDiv.appendChild(window.util.fragment(window.data.randomListAd, window.pin.fillPin)); // Добавляем фрагмент с пинами в DOM
   };
 
   let mapFilter = map.querySelector(`.map__filters-container`); // Находим блок фильтра объявлений.
-  window.mapCardAddFragment = function () {
-    map.insertBefore(window.createFragment(window.randomListAD, window.cardFillTemplate), mapFilter); // Добавляем фрагмент с карточками в DOM
-  };
+  let addFragmentCard = function () {
+    map.insertBefore(window.util.fragment(window.data.randomListAd, window.card.createCard), mapFilter); // Добавляем фрагмент с карточками в DOM
+  }; */
 
   let removeDisabled = function (elements) {
     for (let element of elements) {
@@ -35,13 +29,13 @@
     }
   };
   // Функция активации карты.
-  window.activateMap = function () {
+  let activateMapElements = function () {
     map.classList.remove(`map--faded`);
     removeDisabled(mapFilterForm);
   };
 
   // Функция получения адреса из координат пина.
-  window.getMapAddress = function () {
+  let getAddress = function () {
     let locX = mainMapPin.style.left;
     let locY = mainMapPin.style.top;
     if (map.classList.contains(`map--faded`)) {
@@ -68,7 +62,7 @@
 
     let onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      window.fillInputAddress(window.getMapAddress());
+      window.form.fillInputAddress(getAddress());
 
       let shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -96,4 +90,11 @@
     map.addEventListener(`mousemove`, onMouseMove);
     map.addEventListener(`mouseup`, onMouseUp);
   });
+
+  window.map = {
+    /* addPinFragment: addFragmentPin,
+    addCardFragment: addFragmentCard, */
+    activateMap: activateMapElements,
+    getPinAddress: getAddress
+  };
 })();

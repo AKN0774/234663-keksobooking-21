@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  window.cardFillTemplate = function (randomAd) {
+  let card = function (randomAd) {
     let cardTemplate = document.querySelector(`#card`)
     .content
     .querySelector(`.map__card`); // Находим шаблон карточки
@@ -16,7 +16,6 @@
     let cardFeaturesElements = cardListFeatures.querySelectorAll(`.popup__feature`); // Все элементы списка дополнительных опций.
     let cardDescription = cardFromPin.querySelector(`.popup__description`); // Описание объекта.
 
-    cardFromPin.style.display = `none`;
     cardAvatar.src = randomAd.author.avatar; // Добавляем аватар автора объявления.
     cardTitle.textContent = randomAd.offer.title; // Добавляем заголовок объявления.
     cardAddress.textContent = randomAd.offer.address; // Заполняем поле адреса.
@@ -37,5 +36,7 @@
     }
   };
 
-
+  window.card = {
+    createCard: card
+  };
 })();

@@ -4,40 +4,53 @@
 
 // Функция создания фрагмента с добавлением в него сгенерированных объявлений.
 (function () {
-  window.createFragment = function (listAD, filledTemplate) {
-    let createdFragment = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
+  let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
+  let map = document.querySelector(`.map`); // Находим карту.
+  let mapFilter = map.querySelector(`.map__filters-container`); // Находим блок фильтра объявлений.
+  let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
+  window.form.fillInputAddress(window.map.getPinAddress()); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
+
+  let addFragment = function (listAd) {
+    let createdFragmentPin = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
     let generatePin;
-    for (let i = 0; i < listAD.length; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
-      generatePin = filledTemplate(listAD[i]);
-      createdFragment.appendChild(generatePin);
+    let generateCard;
+    for (let i = 0; i < listAd.length; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
+      generatePin = window.pin.fillPin(listAd[i]);
+      generatePin.addEventListener(`click`, function () {
+        generateCard = window.card.createCard(listAd[i]);
+        if (map.querySelector(`.map__card`)) {
+          let cardElement = map.querySelector(`.map__card`);
+          cardElement.remove();
+        }
+        map.insertBefore(generateCard, mapFilter);
+      });
+      createdFragmentPin.appendChild(generatePin);
     }
-    return createdFragment;
+    mapPinDiv.appendChild(createdFragmentPin);
   };
+
+  // Функция активации страницы.
+  let activatePage = function () {
+    window.map.activateMap();
+    window.form.activateAdForm();
+    window.form.fillInputAddress(window.map.getPinAddress()); // Заполняем поле адреса уже после активации.
+    addFragment(window.data.randomListAd);
+    /* window.map.addPinFragment();
+    window.map.addCardFragment(); */
+  };
+
+  // Добавляем обработчик нажатия кнопки мыши на главный пин.
+  mainMapPin.addEventListener(`mousedown`, function (evt) {
+    if (evt.button === 0) {
+      activatePage(); // Активируем страницу.
+    }
+  });
+
+  // Добавляема обработчик нажатия клавиши Enter при фокусе на главном пине.
+  mainMapPin.addEventListener(`keydown`, function (evt) {
+    if (evt.key === `Enter`) {
+      activatePage(); // Активируем страницу.
+    }
+  });
+
 }());
-
-let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
-
-window.fillInputAddress(window.getMapAddress()); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
-
-// Функция активации страницы.
-let activatePage = function () {
-  window.activateMap();
-  window.activateAdForm();
-  window.fillInputAddress(window.getMapAddress()); // Заполняем поле адреса уже после активации.
-  window.mapAddFragment();
-  window.mapCardAddFragment();
-};
-
-// Добавляем обработчик нажатия кнопки мыши на главный пин.
-mainMapPin.addEventListener(`mousedown`, function (evt) {
-  if (evt.button === 0) {
-    activatePage(); // Активируем страницу.
-  }
-});
-
-// Добавляема обработчик нажатия клавиши Enter при фокусе на главном пине.
-mainMapPin.addEventListener(`keydown`, function (evt) {
-  if (evt.key === `Enter`) {
-    activatePage(); // Активируем страницу.
-  }
-});

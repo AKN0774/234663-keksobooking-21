@@ -6,13 +6,7 @@
   let addressInput = adForm.querySelector(`#address`); // Находим поле адреса.
   let fieldsetForm = adForm.querySelectorAll(`fieldset`); // Находим все fieldset формы.
 
-  let addDisabled = function (elements) {
-    for (let element of elements) {
-      element.disabled = true;
-    }
-  };
-
-  addDisabled(fieldsetForm);
+  window.util.disabled(fieldsetForm);
 
   let removeDisabled = function (elements) {
     for (let element of elements) {
@@ -21,13 +15,13 @@
   };
 
   // Функция активации формы объвления.
-  window.activateAdForm = function () {
+  let activateForm = function () {
     adForm.classList.remove(`ad-form--disabled`);
     removeDisabled(fieldsetForm);
   };
 
   // Функция добавления значений в поле адреса.
-  window.fillInputAddress = function (address) {
+  let fillAddress = function (address) {
     let {x, y} = address;
     addressInput.value = `X : ` + x + ` , Y : ` + y;
   };
@@ -57,18 +51,23 @@
   // Функция зависимости минимальной цены от типа жилья.
   let setPrice = function () {
     let type = typeOfLodging.value;
-    if (type === `bungalow`) {
-      price.min = `0`;
-      price.placeholder = `0`;
-    } else if (type === `flat`) {
-      price.min = `1000`;
-      price.placeholder = `1000`;
-    } else if (type === `house`) {
-      price.min = `5000`;
-      price.placeholder = `5000`;
-    } else {
-      price.min = `10000`;
-      price.placeholder = `10000`;
+    switch (type) {
+      case `bungalow` :
+        price.min = `0`;
+        price.placeholder = `0`;
+        break;
+      case `flat` :
+        price.min = `1000`;
+        price.placeholder = `1000`;
+        break;
+      case `house` :
+        price.min = `5000`;
+        price.placeholder = `5000`;
+        break;
+      case `palace`:
+        price.min = `10000`;
+        price.placeholder = `10000`;
+        break;
     }
   };
 
@@ -104,4 +103,9 @@
   submitForm.addEventListener(`click`, function () {
     roomValidity();
   });
+
+  window.form = {
+    activateAdForm: activateForm,
+    fillInputAddress: fillAddress,
+  };
 })();
