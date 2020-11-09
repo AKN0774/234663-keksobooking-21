@@ -11,18 +11,6 @@
 
   window.util.disabled(mapFilterForm); // Делаем фильтр карты неактивным.
 
-  // Блок функций для добавления фрагмента в DOM.
-
- /*  let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
-  let addFragmentPin = function () {
-    mapPinDiv.appendChild(window.util.fragment(window.data.randomListAd, window.pin.fillPin)); // Добавляем фрагмент с пинами в DOM
-  };
-
-  let mapFilter = map.querySelector(`.map__filters-container`); // Находим блок фильтра объявлений.
-  let addFragmentCard = function () {
-    map.insertBefore(window.util.fragment(window.data.randomListAd, window.card.createCard), mapFilter); // Добавляем фрагмент с карточками в DOM
-  }; */
-
   let removeDisabled = function (elements) {
     for (let element of elements) {
       element.disabled = false;
@@ -92,8 +80,6 @@
   });
 
   window.map = {
-    /* addPinFragment: addFragmentPin,
-    addCardFragment: addFragmentCard, */
     activateMap: activateMapElements,
     getPinAddress: getAddress
   };

@@ -35,8 +35,6 @@
     window.form.activateAdForm();
     window.form.fillInputAddress(window.map.getPinAddress()); // Заполняем поле адреса уже после активации.
     addFragment(window.data.randomListAd);
-    /* window.map.addPinFragment();
-    window.map.addCardFragment(); */
   };
 
   // Добавляем обработчик нажатия кнопки мыши на главный пин.
