@@ -78,7 +78,5 @@
   };
 
   // Создаём переменную в которую сохраням массив сгенерированных случайных объявлений.
-  window.data = {
-    randomListAd: createListAd(AD_COUNTER)
-  };
+  window.data = createListAd(AD_COUNTER);
 })();

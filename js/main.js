@@ -5,28 +5,23 @@
 // Функция создания фрагмента с добавлением в него сгенерированных объявлений.
 (function () {
   let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
-  let map = document.querySelector(`.map`); // Находим карту.
-  let mapFilter = map.querySelector(`.map__filters-container`); // Находим блок фильтра объявлений.
-  let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
   window.form.fillInputAddress(window.map.getPinAddress()); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
 
   let addFragment = function (listAd) {
     let createdFragmentPin = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
-    let generatePin;
-    let generateCard;
+
     for (let i = 0; i < listAd.length; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
-      generatePin = window.pin.fillPin(listAd[i]);
-      generatePin.addEventListener(`click`, function () {
-        generateCard = window.card.createCard(listAd[i]);
-        if (map.querySelector(`.map__card`)) {
-          let cardElement = map.querySelector(`.map__card`);
-          cardElement.remove();
-        }
-        map.insertBefore(generateCard, mapFilter);
+      let pin;
+      let card;
+      pin = window.pin.fillPin(listAd[i]);
+      pin.addEventListener(`click`, function () {
+        card = window.card.filledCard(listAd[i]);
+        window.card.deleteCard();
+        window.map.addCard(card);
       });
-      createdFragmentPin.appendChild(generatePin);
+      createdFragmentPin.appendChild(pin);
     }
-    mapPinDiv.appendChild(createdFragmentPin);
+    window.map.addPin(createdFragmentPin);
   };
 
   // Функция активации страницы.
@@ -34,7 +29,7 @@
     window.map.activateMap();
     window.form.activateAdForm();
     window.form.fillInputAddress(window.map.getPinAddress()); // Заполняем поле адреса уже после активации.
-    addFragment(window.data.randomListAd);
+    addFragment(window.data);
   };
 
   // Добавляем обработчик нажатия кнопки мыши на главный пин.
