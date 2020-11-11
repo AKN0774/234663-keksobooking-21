@@ -87,7 +87,7 @@
 
   let insertPin = function (element) {
     mapPinDiv.appendChild(element);
-  }
+  };
 
   window.map = {
     activateMap: activateMapElements,
