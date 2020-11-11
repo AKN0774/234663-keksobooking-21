@@ -17,8 +17,15 @@
     }
   };
 
+  let removeDisabled = function (elements) {
+    for (let element of elements) {
+      element.disabled = false;
+    }
+  };
+
   window.util = {
     // fragment: createFragment,
-    disabled: addDisabled
+    disabled: addDisabled,
+    switchOn: removeDisabled
   };
 }());

@@ -5,7 +5,7 @@
   const MARKER_SIZE_Y = 70; // Размеры маркера по оси Y.
 
   // Функция создания метки на карте из случайного объявления.
-  let pin = function (randomAd) { // Создаём метку на карте по шаблону.
+  let createTemplatePin = function (randomAd) { // Создаём метку на карте по шаблону.
     let simelarMapPinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`.map__pin`); // Находим button в шаблоне, которой будем менять свойства.
@@ -20,7 +20,7 @@
     return randomMapPin;
   };
   window.pin = {
-    fillPin: pin
+    fillPin: createTemplatePin
   };
 
 })();

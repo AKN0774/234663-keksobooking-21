@@ -13,15 +13,11 @@
 
   window.util.disabled(mapFilterForm); // Делаем фильтр карты неактивным.
 
-  let removeDisabled = function (elements) {
-    for (let element of elements) {
-      element.disabled = false;
-    }
-  };
+
   // Функция активации карты.
   let activateMapElements = function () {
     map.classList.remove(`map--faded`);
-    removeDisabled(mapFilterForm);
+    window.util.switchOn(mapFilterForm);
   };
 
   // Функция получения адреса из координат пина.

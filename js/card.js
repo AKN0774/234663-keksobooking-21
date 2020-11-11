@@ -1,24 +1,24 @@
 'use strict';
 (function () {
   let map = document.querySelector(`.map`); // Находим карту.
-  let createCard = function (randomAd) {
+  let createTemplateCard = function (randomAd) {
     let cardTemplate = document.querySelector(`#card`)
     .content
     .querySelector(`.map__card`); // Находим шаблон карточки
-    let cardFromPin = cardTemplate.cloneNode(true); // Клонируем шаблон карточки.
-    let cardAvatar = cardFromPin.querySelector(`.popup__avatar`); // Картинка аватара.
-    let cardTitle = cardFromPin.querySelector(`.popup__title`); // Заголовок объявления.
-    let cardAddress = cardFromPin.querySelector(`.popup__text--address`); // Адрес объекта.
-    let cardPrice = cardFromPin.querySelector(`.popup__text--price`); // Цена объекта.
-    let cardType = cardFromPin.querySelector(`.popup__type`); // Тип жилья.
-    let cardCapacity = cardFromPin.querySelector(`.popup__text--capacity`); // Количество комнат и гостей.
-    let cardTime = cardFromPin.querySelector(`.popup__text--time`); // Время заезда и выезда.
-    let cardListFeatures = cardFromPin.querySelector(`.popup__features`); // Список дополнительных опций жилища.
+    let card = cardTemplate.cloneNode(true); // Клонируем шаблон карточки.
+    let cardAvatar = card.querySelector(`.popup__avatar`); // Картинка аватара.
+    let cardTitle = card.querySelector(`.popup__title`); // Заголовок объявления.
+    let cardAddress = card.querySelector(`.popup__text--address`); // Адрес объекта.
+    let cardPrice = card.querySelector(`.popup__text--price`); // Цена объекта.
+    let cardType = card.querySelector(`.popup__type`); // Тип жилья.
+    let cardCapacity = card.querySelector(`.popup__text--capacity`); // Количество комнат и гостей.
+    let cardTime = card.querySelector(`.popup__text--time`); // Время заезда и выезда.
+    let cardListFeatures = card.querySelector(`.popup__features`); // Список дополнительных опций жилища.
     let cardFeaturesElements = cardListFeatures.querySelectorAll(`.popup__feature`); // Все элементы списка дополнительных опций.
-    let cardDescription = cardFromPin.querySelector(`.popup__description`); // Описание объекта.
-    let cardPhotosDiv = cardFromPin.querySelector(`.popup__photos`); // Контейнер для фотографий объекта.
+    let cardDescription = card.querySelector(`.popup__description`); // Описание объекта.
+    let cardPhotosDiv = card.querySelector(`.popup__photos`); // Контейнер для фотографий объекта.
     let cardPhotoElements = cardPhotosDiv.querySelectorAll(`.popup__photo`);
-    let cardClose = cardFromPin.querySelector(`.popup__close`); // Кнопка закрытия карточки.
+    let cardClose = card.querySelector(`.popup__close`); // Кнопка закрытия карточки.
 
     cardAvatar.src = randomAd.author.avatar; // Добавляем аватар автора объявления.
     cardTitle.textContent = randomAd.offer.title; // Добавляем заголовок объявления.
@@ -31,14 +31,9 @@
     cardListFeatures.appendChild(createFeatures(cardFeaturesElements, randomAd.offer.features)); // Добавляем фрагмент из созданных features.
     cardPhotosDiv.appendChild(createPhoto(cardPhotoElements, randomAd.offer.photos));
     cardClose.addEventListener(`click`, function () {
-      cardFromPin.style.display = `none`;
+      removeCard();
     });
-    cardClose.addEventListener(`keydown`, function (evt) {
-      if (evt.key === `Enter`) {
-        cardFromPin.style.display = `none`;
-      }
-    });
-    return cardFromPin;
+    return card;
   };
 
 
@@ -51,32 +46,7 @@
     for (let i = 0; i < features.length; i++) {
       let li = document.createElement(`li`);
       li.classList.add(`popup__feature`);
-      switch (features[i]) {
-        case `wifi`:
-          li.textContent = `wifi`;
-          li.classList.add(`popup__feature--wifi`);
-          break;
-        case `dishwasher` :
-          li.textContent = `dishwasher`;
-          li.classList.add(`popup__feature--dishwasher`);
-          break;
-        case `parking` :
-          li.textContent = `parking`;
-          li.classList.add(`popup__feature--parking`);
-          break;
-        case `washer`:
-          li.textContent = `washer`;
-          li.classList.add(`popup__feature--washer`);
-          break;
-        case `elevator` :
-          li.textContent = `elevator`;
-          li.classList.add(`popup__feature--elevator`);
-          break;
-        case `conditioner` :
-          li.textContent = `conditioner`;
-          li.classList.add(`popup__feature--conditioner`);
-          break;
-      }
+      li.classList.add(`popup__feature--` + features[i]);
       createdFragment.appendChild(li);
     }
     return createdFragment;
@@ -109,7 +79,7 @@
 
 
   window.card = {
-    filledCard: createCard,
+    createCard: createTemplateCard,
     deleteCard: removeCard
   };
 })();

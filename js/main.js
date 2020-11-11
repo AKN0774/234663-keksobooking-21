@@ -11,11 +11,9 @@
     let createdFragmentPin = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
 
     for (let i = 0; i < listAd.length; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
-      let pin;
-      let card;
-      pin = window.pin.fillPin(listAd[i]);
+      const pin = window.pin.fillPin(listAd[i]);
       pin.addEventListener(`click`, function () {
-        card = window.card.filledCard(listAd[i]);
+        const card = window.card.createCard(listAd[i]);
         window.card.deleteCard();
         window.map.addCard(card);
       });
