@@ -15,7 +15,9 @@
       pin.addEventListener(`click`, function () {
         const card = window.card.createCard(listAd[i]);
         window.card.deleteCard();
+        document.removeEventListener(`keydown`, window.card.closeEscCard);
         window.map.addCard(card);
+        document.addEventListener(`keydown`, window.card.closeEscCard);
       });
       createdFragmentPin.appendChild(pin);
     }

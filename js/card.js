@@ -32,10 +32,16 @@
     cardPhotosDiv.appendChild(createPhoto(cardPhotoElements, randomAd.offer.photos));
     cardClose.addEventListener(`click`, function () {
       removeCard();
+      document.removeEventListener(`keydown`, window.card.closeEscCard);
     });
     return card;
   };
 
+  let onCardEscPress = function (evt) {
+    if (evt.key === `Escape`) {
+      removeCard();
+    }
+  };
 
   let createFeatures = function (elements, features) {
     let createdFragment = document.createDocumentFragment();
@@ -80,6 +86,7 @@
 
   window.card = {
     createCard: createTemplateCard,
-    deleteCard: removeCard
+    deleteCard: removeCard,
+    closeEscCard: onCardEscPress
   };
 })();

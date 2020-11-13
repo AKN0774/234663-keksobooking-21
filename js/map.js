@@ -72,9 +72,6 @@
 
     map.addEventListener(`mousemove`, onMouseMove);
     map.addEventListener(`mouseup`, onMouseUp);
-
-    map.addEventListener(`mousemove`, onMouseMove);
-    map.addEventListener(`mouseup`, onMouseUp);
   });
 
   let insertCard = function (element) {
