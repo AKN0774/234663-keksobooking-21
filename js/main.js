@@ -2,59 +2,48 @@
 
 // Блок с активацией страницы и карты.
 
-let adForm = document.querySelector(`.ad-form`); // Находим форму объявления.
-let fieldsetForm = adForm.querySelectorAll(`fieldset`); // Находим все fieldset формы.
-let map = document.querySelector(`.map`); // Находим карту.
-let mapFilterForm = document.querySelector(`.map__filters`); // Находим форму фильтра.
-let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
+// Функция создания фрагмента с добавлением в него сгенерированных объявлений.
+(function () {
+  let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
+  window.form.fillInputAddress(window.map.getPinAddress()); // Вызываем функцию заполнения поля адреса ещё до активации страницы.
 
-// Функция добавления неактивного состояния элементов.
-let addDisabled = function (elements) {
-  for (let element of elements) {
-    element.disabled = true;
-  }
-};
+  let addFragment = function (listAd) {
+    let createdFragmentPin = document.createDocumentFragment(); // Объявляем пременную в которой сохраняме фрагмент.
 
-addDisabled(fieldsetForm);
-addDisabled(mapFilterForm);
+    for (let i = 0; i < listAd.length; i++) { // Запускаем цикл добавления сгенерированных меток во фрагмент.
+      const pin = window.pin.fillPin(listAd[i]);
+      pin.addEventListener(`click`, function () {
+        const card = window.card.createCard(listAd[i]);
+        window.card.deleteCard();
+        document.removeEventListener(`keydown`, window.card.closeEscCard);
+        window.map.addCard(card);
+        document.addEventListener(`keydown`, window.card.closeEscCard);
+      });
+      createdFragmentPin.appendChild(pin);
+    }
+    window.map.addPin(createdFragmentPin);
+  };
 
-// Функция перевода элементов в активное состояние.
-let removeDisabled = function (elements) {
-  for (let element of elements) {
-    element.disabled = false;
-  }
-};
+  // Функция активации страницы.
+  let activatePage = function () {
+    window.map.activateMap();
+    window.form.activateAdForm();
+    window.form.fillInputAddress(window.map.getPinAddress()); // Заполняем поле адреса уже после активации.
+    addFragment(window.data);
+  };
 
-// Функция активации карты.
-let activateMap = function () {
-  map.classList.remove(`map--faded`);
-};
+  // Добавляем обработчик нажатия кнопки мыши на главный пин.
+  mainMapPin.addEventListener(`mousedown`, function (evt) {
+    if (evt.button === 0) {
+      activatePage(); // Активируем страницу.
+    }
+  });
 
-// Функция активации формы объвления.
-let activateAdForm = function () {
-  adForm.classList.remove(`ad-form--disabled`);
-  removeDisabled(mapFilterForm);
-  removeDisabled(fieldsetForm);
-};
+  // Добавляема обработчик нажатия клавиши Enter при фокусе на главном пине.
+  mainMapPin.addEventListener(`keydown`, function (evt) {
+    if (evt.key === `Enter`) {
+      activatePage(); // Активируем страницу.
+    }
+  });
 
-// Функция активации страницы.
-let activatePage = function () {
-  activateMap();
-  activateAdForm();
-  window.fillAddress(window.getMapAddress); // Заполняем поле адреса уже после активации.
-  window.addFramentOfPins();
-};
-
-// Добавляем обработчик нажатия кнопки мыши на главный пин.
-mainMapPin.addEventListener(`mousedown`, function (evt) {
-  if (evt.button === 0) {
-    activatePage(); // Активируем страницу.
-  }
-});
-
-// Добавляема обработчик нажатия клавиши Enter при фокусе на главном пине.
-mainMapPin.addEventListener(`keydown`, function (evt) {
-  if (evt.key === `Enter`) {
-    activatePage(); // Активируем страницу.
-  }
-});
+}());

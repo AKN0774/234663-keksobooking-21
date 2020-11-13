@@ -7,9 +7,21 @@
   const MAIN_PIN_Y_ACTIVE = 86; // Размеры главного маркера по оси Y в активном состоянии.
   let map = document.querySelector(`.map`); // Находим карту.
   let mainMapPin = document.querySelector(`.map__pin--main`); // Находим главную метку.
+  let mapFilterForm = document.querySelector(`.map__filters`); // Находим форму фильтра.
+  let mapFilter = map.querySelector(`.map__filters-container`); // Находим блок фильтра объявлений.
+  let mapPinDiv = document.querySelector(`.map__pins`); // Находим блок, куда будем добавлять фрагмент.
+
+  window.util.disabled(mapFilterForm); // Делаем фильтр карты неактивным.
+
+
+  // Функция активации карты.
+  let activateMapElements = function () {
+    map.classList.remove(`map--faded`);
+    window.util.switchOn(mapFilterForm);
+  };
 
   // Функция получения адреса из координат пина.
-  window.getMapAddress = function () {
+  let getAddress = function () {
     let locX = mainMapPin.style.left;
     let locY = mainMapPin.style.top;
     if (map.classList.contains(`map--faded`)) {
@@ -36,6 +48,7 @@
 
     let onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
+      window.form.fillInputAddress(getAddress());
 
       let shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -59,8 +72,20 @@
 
     map.addEventListener(`mousemove`, onMouseMove);
     map.addEventListener(`mouseup`, onMouseUp);
-
-    map.addEventListener(`mousemove`, onMouseMove);
-    map.addEventListener(`mouseup`, onMouseUp);
   });
+
+  let insertCard = function (element) {
+    map.insertBefore(element, mapFilter);
+  };
+
+  let insertPin = function (element) {
+    mapPinDiv.appendChild(element);
+  };
+
+  window.map = {
+    activateMap: activateMapElements,
+    getPinAddress: getAddress,
+    addCard: insertCard,
+    addPin: insertPin
+  };
 })();
