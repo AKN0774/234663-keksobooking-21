@@ -32,7 +32,6 @@
     cardPhotosDiv.appendChild(createPhoto(cardPhotoElements, randomAd.offer.photos));
     cardClose.addEventListener(`click`, function () {
       removeCard();
-      document.removeEventListener(`keydown`, window.card.closeEscCard);
     });
     return card;
   };
@@ -80,6 +79,7 @@
     let cardElement = map.querySelector(`.map__card`);
     if (cardElement) {
       cardElement.remove();
+      document.removeEventListener(`keydown`, window.card.closeEscCard);
     }
   };
 
